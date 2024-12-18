@@ -1,12 +1,8 @@
 import mysql from 'mysql2/promise';
 
-const dbConfig = {
-    host: 'localhost',
-    user: 'user',
+export const dbPool = mysql.createPool({
+    host: 'database',
+    user: 'root',
     password: 'password',
     database: 'garden_control',
-};
-
-export const connect = async () => {
-    return await mysql.createConnection(dbConfig);
-};
+});
