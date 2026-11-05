@@ -71,10 +71,14 @@ no model/route layer yet.
 
 ## Configuration
 
-- `connection.js` reads the DB config from `DB_HOST`/`DB_PORT`/`DB_USER`/`DB_PASSWORD`/`DB_NAME`.
-  Compose injects these into the backend container (host `database`, derived from the `MYSQL_*`
-  values in `.env`). To run the backend on the host instead, set those `DB_*` vars yourself and
-  point `DB_HOST` at a reachable MySQL.
+- `connection.js` reads the DB config from `DB_HOST`/`DB_PORT`/`DB_USER`/`DB_PASSWORD`/`DB_NAME`
+  and fails fast at startup if any is missing. Compose injects these into the backend container
+  (host `database`, derived from the `MYSQL_*` values in `.env`). To run the backend on the host
+  instead, set those `DB_*` vars yourself and point `DB_HOST` at a reachable MySQL.
+- CORS is restricted to `CORS_ORIGIN` (defaults to `http://localhost:8080`, the frontend). The
+  server always echoes that single origin, so any other origin is rejected by the browser.
+- MySQL is pinned to `mysql:8.4`. The DB applies `MYSQL_*` (password, user, db) only on first
+  volume init — after changing credentials in `.env`, run `docker-compose down -v` to re-seed.
 - The frontend container is served by `npm run start` → `vite --host 0.0.0.0 --port 8080`
   (matches the compose port mapping). `npm run dev` is plain Vite on its default port.
 - `frontend/src/App.jsx` is still the default Vite starter template; the UI is unbuilt.
