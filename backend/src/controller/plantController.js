@@ -1,32 +1,27 @@
-import { getAllPlantsService, addPlantService } from "../service/plantService.js";
+import { z } from 'zod';
+import { getAllPlantsService, addPlantService } from '../service/plantService.js';
+import { asyncHandler } from '../middleware/asyncHandler.js';
 
-export const getAllPlantsController = async (_req, res) => {
-    try {
-        const plants = await getAllPlantsService();
-        return res.status(200).json(plants);
-    } catch (error) {
-        return res.status(500).json({ error: error.message })
-    }
-}
+const createPlantSchema = z.object({
+    name: z.string().min(1),
+    planted_date: z.coerce.date(),
+    observations: z.string().nullish(),
+});
 
-export const addPlantController = async (req, res) => {
-    const { name, planted_date, observations } = req.body;
+export const getAllPlantsController = asyncHandler(async (req, res) => {
+    const plants = await getAllPlantsService(req.userId);
+    return res.status(200).json(plants);
+});
 
-    if (!name || !planted_date) {
-        return res.status(400).json({ error: "Fields 'name' and 'planted_date' are required." });
-    }
+export const addPlantController = asyncHandler(async (req, res) => {
+    const { name, planted_date, observations } = createPlantSchema.parse(req.body);
 
-    // Campos opcionais tratados como null, se ausentes
-    const plantData = {
+    const plant = await addPlantService({
+        userId: req.userId,
         name,
-        planted_date,
-        observations: observations || null
-    };
+        plantedDate: planted_date,
+        observations: observations ?? null,
+    });
 
-    try {
-        const newPlant = await addPlantService(plantData);
-        return res.status(201).json({ newPlant, message: "Plant was successfully added" });
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
+    return res.status(201).json(plant);
+});

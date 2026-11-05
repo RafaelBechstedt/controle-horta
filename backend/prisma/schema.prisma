@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  plants       Plant[]
+
+  @@map("users")
+}
+
+model Plant {
+  id             Int             @id @default(autoincrement())
+  userId         Int             @map("user_id")
+  name           String
+  plantedDate    DateTime        @map("planted_date") @db.Date
+  observations   String?         @db.Text
+  createdAt      DateTime        @default(now()) @map("created_at")
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fertilizations Fertilization[]
+
+  @@index([userId])
+  @@map("plants")
+}
+
+model Fertilization {
+  id                Int      @id @default(autoincrement())
+  plantId           Int      @map("plant_id")
+  fertilizationDate DateTime @map("fertilization_date") @db.Date
+  fertilization     String
+  notes             String?  @db.Text
+  createdAt         DateTime @default(now()) @map("created_at")
+  plant             Plant    @relation(fields: [plantId], references: [id], onDelete: Cascade)
+
+  @@index([plantId])
+  @@map("fertilizations")
+}

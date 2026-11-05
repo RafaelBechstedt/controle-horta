@@ -1,5 +1,8 @@
 FROM node:20-alpine3.20
 
+# Prisma's query engine needs openssl present at runtime
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY package*.json ./
