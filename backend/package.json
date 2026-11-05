@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "API for tracking plants and fertilizations in a home vegetable garden",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -10,8 +10,8 @@
   },
   "type": "module",
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Rafael Bechstedt",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.21.2",
     "mysql2": "^3.11.5"

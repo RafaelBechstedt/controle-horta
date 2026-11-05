@@ -11,9 +11,12 @@ and API are in English; some comments and commit messages are in Portuguese.
 
 ## Running
 
-The intended workflow is Docker Compose, which also provisions MySQL and seeds the schema:
+The intended workflow is Docker Compose, which also provisions MySQL and seeds the schema.
+First copy the env template (compose reads `MYSQL_*` from `.env` for both the DB container and
+the backend's `DB_*` variables):
 
 ```bash
+cp .env.example .env             # then edit the passwords
 docker-compose up --build        # backend :3001, frontend :8080, mysql :3306
 ```
 
@@ -66,11 +69,12 @@ required, `observations` optional).
 `fertilizations` (FK `plant_id → plants.id ON DELETE CASCADE`). The fertilizations table has
 no model/route layer yet.
 
-## Known configuration gotchas
+## Configuration
 
-- `connection.js` hardcodes host `database` (the compose service name) and user `root`. It only
-  works from inside the Docker network; running the backend on the host won't resolve `database`.
-- The frontend `Dockerfile` CMD is `npm run start`, but `frontend/package.json` has no `start`
-  script and Vite's dev server defaults to port 5173 (compose exposes 8080). The frontend
-  container will not serve correctly as-is — run it with `npm run dev` or fix the Dockerfile/port.
+- `connection.js` reads the DB config from `DB_HOST`/`DB_PORT`/`DB_USER`/`DB_PASSWORD`/`DB_NAME`.
+  Compose injects these into the backend container (host `database`, derived from the `MYSQL_*`
+  values in `.env`). To run the backend on the host instead, set those `DB_*` vars yourself and
+  point `DB_HOST` at a reachable MySQL.
+- The frontend container is served by `npm run start` → `vite --host 0.0.0.0 --port 8080`
+  (matches the compose port mapping). `npm run dev` is plain Vite on its default port.
 - `frontend/src/App.jsx` is still the default Vite starter template; the UI is unbuilt.
