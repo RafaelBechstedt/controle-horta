@@ -1,8 +1,7 @@
 # Roadmap & proposed issues
 
-This file is a **draft backlog** for `controle-horta`. Each item below is written to be turned
-into a GitHub issue (copy the block, adjust, open the issue). The goal is to let other
-contributors — human or AI — pick up well-scoped, independent chunks of work.
+This is my planned work for `controle-horta`, split into well-scoped tasks. Each item below maps
+to a GitHub issue.
 
 > Status legend: 🟢 ready to start · 🟡 blocked by a dependency · 🔵 nice-to-have / later
 
@@ -16,7 +15,7 @@ contributors — human or AI — pick up well-scoped, independent chunks of work
 - Zod validation, central error handler, `/health`, CORS restricted to the frontend origin.
 - Layered backend: `route → controller → service → model → lib/prisma`.
 
-See `CLAUDE.md` for how to run, migrate, and the API contract.
+See `README.md` for how to run and the API contract.
 
 ---
 
@@ -70,7 +69,9 @@ isolation rules as fertilizations.
 ### 6. Reminders for watering / fertilizing 🔵 (depends on #4, #5)
 **Context:** a planned feature in the README.
 **Scope:** background scheduler (e.g. node-cron, or BullMQ + Redis if it grows) that computes
-due reminders per plant. Decide delivery (in-app list first; email/push later).
+due reminders per plant. The first version is **in-app only** — a list of due reminders shown in
+the UI. Email/push delivery needs an external service, so it's out of scope for now and left for
+later.
 **Labels:** `backend`, `enhancement`, `needs-design`. **Est:** L.
 
 ---
